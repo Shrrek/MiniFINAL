@@ -29,6 +29,7 @@ SRCS =  $M$Sbuiltins.c\
 		$M$Sprocess_multiple_cmds.c\
 		$M$Sprocess_redir_utils.c\
 		$M$Sprocess_redir.c\
+		$M$Ssignals.c\
 		$M$Ssize.c\
 		$M$Ssplit.c\
 		$M$Sstrings.c\
@@ -63,6 +64,7 @@ OBJS =  $M$Obuiltins.o\
 		$M$Oprocess_multiple_cmds.o\
 		$M$Oprocess_redir_utils.o\
 		$M$Oprocess_redir.o\
+		$M$Osignals.o\
 		$M$Osize.o\
 		$M$Osplit.o\
 		$M$Ostrings.o\

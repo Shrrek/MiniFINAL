@@ -37,8 +37,8 @@ int	main(int argc, char **argv, char **envp)
 	if (argc == 1)
 	{
 		ft_init(&minishell, (const char **)envp);
-		// signal(SIGINT, ft_signal_handler);
-		// signal(SIGQUIT, ft_signal_handler);
+		 signal(SIGINT, ft_signal_handler);
+		 signal(SIGQUIT, ft_signal_handler);
 		while (1)
 		{
 			minishell.input = readline("MiniTabaqueros >$ ");
