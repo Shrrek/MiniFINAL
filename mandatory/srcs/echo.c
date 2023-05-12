@@ -60,6 +60,6 @@ void	ft_echo(t_mini *minishell, int cmd, int fd)
 	{
 		if (minishell->cmds[cmd][1] != NULL)
 			ft_write_args(minishell->cmds[cmd], fd);
-		ft_putstr_fd(0, "\n", 0);
+		ft_putstr_fd(fd, "\n", 0);
 	}
 }

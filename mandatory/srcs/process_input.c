@@ -197,6 +197,8 @@ void	ft_process_input(t_mini *minishell)
 	j = -1;
 	// separamos el input del usuario por pipes
 	minishell->input_pipes = ft_split_pipes(minishell->input);
+	//ft_print2dstr(minishell->input_pipes);
+	//printf("%s\n", minishell->input_pipes[0]);
 	minishell->cmds = (char ***)malloc(sizeof(char **)
 			* (ft_2dstrlen((const char **)minishell->input_pipes) + 1));
 	if (!minishell->cmds)
@@ -205,6 +207,8 @@ void	ft_process_input(t_mini *minishell)
 	while (minishell->input_pipes[++i])
 		minishell->cmds[++j] = ft_split_input(minishell->input_pipes[i], ' ');
 	minishell->cmds[++j] = NULL;
+	//ft_print3dstr(minishell->cmds);
+	//printf("aqui%s", minishell->cmds[0][0]);
 	ft_free_2dstr(minishell->input_pipes);
 	minishell->input_pipes = NULL;
 	// APARTIR DE AQUI PUEDE CAMBIAR EL ORDEN. SEGUN COMO VAYA DESARROLLANDO LOS PIPES Y LAS REDIRECCIONES, SE EXPANDIRAN LAS VARIABLES Y SE ELIMINARAN LAS COMILLAS  EN UNA PARTE DEL CODIGO

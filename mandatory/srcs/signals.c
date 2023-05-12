@@ -21,8 +21,13 @@ void	ft_signal_handler(int signal)
 		rl_replace_line("", 0);
 		rl_redisplay();
 	} 
-	/*if (signal == SIGQUIT)
+	/*if (signal == SIGINT && proceso hijo)
 	{
-		NULL;
+		printf("\n");
+		rl_on_new_line();
+	}
+	if (signal == SIGQUIT && proceso hijo)
+	{
+		printf("Quit.\n");
 	}*/
 }

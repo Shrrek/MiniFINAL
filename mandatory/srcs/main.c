@@ -37,8 +37,8 @@ int	main(int argc, char **argv, char **envp)
 	if (argc == 1)
 	{
 		ft_init(&minishell, (const char **)envp);
-		 signal(SIGINT, ft_signal_handler);
-		 signal(SIGQUIT, ft_signal_handler);
+		signal(SIGINT, ft_signal_handler);
+		signal(SIGQUIT, ft_signal_handler);
 		while (1)
 		{
 			minishell.input = readline("MiniTabaqueros >$ ");
@@ -52,6 +52,6 @@ int	main(int argc, char **argv, char **envp)
 		ft_general_free(&minishell);
 		return (printf("exit\n")); // pedirle a cristian que me diga como ponerlo en mi misma linea
 	}
-	printf("Error. Númmero de argumentos inválido.");
+	printf("Error. Invalid arguments.\n");
 	return (0);
 }

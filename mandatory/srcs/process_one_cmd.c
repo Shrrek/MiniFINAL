@@ -6,7 +6,6 @@ static void	ft_exec_one_cmd(t_mini *minishell)
 	char	*cmd_path;
 
 	pid = fork();
-	ft_print2dstr(minishell->cmds[0]);
 	if (pid == -1)
 	{
 		perror("fork");
@@ -14,6 +13,12 @@ static void	ft_exec_one_cmd(t_mini *minishell)
 	}
 	else if (pid == 0)
 	{
+		if (minishell->cmds[0][0][0] == '/')
+		{
+			execve(minishell->cmds[0][0], minishell->cmds[0],
+				minishell->mini_env);
+			exit(EXIT_FAILURE);
+		}
 		cmd_path = ft_get_command_path(minishell->cmds[0], minishell->mini_env);
 		if (!cmd_path)
 			exit(EXIT_FAILURE);
