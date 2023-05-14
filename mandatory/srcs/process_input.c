@@ -1,13 +1,5 @@
 #include "../incs/minishell.h"
 
-typedef struct s_proc_cmd
-{
-	char	**cmds;
-	int		redir;
-	int		redir_type;
-	int		fd[2];
-}	t_proc_cmd;
-
 void	ft_putstr_fd(int fd, char *str, int mode)
 {
 	char	*nl_str;
@@ -53,6 +45,7 @@ void	ft_print3dstr(char ***str)
 			printf("cadena %d\n", i);
 			ft_print2dstr(str[i]);
 		}
+		printf("-----\n");
 	}
 }
 
@@ -88,7 +81,7 @@ void	ft_print3dstr(char ***str)
 	}
 }*/
 
-void	ft_exec_final_cmd(t_mini *minishell, int i)
+/*void	ft_exec_final_cmd(t_mini *minishell, int i)
 {
 	pid_t	pid;
 	char	*cmd_path;
@@ -105,30 +98,13 @@ void	ft_exec_final_cmd(t_mini *minishell, int i)
 	{
 		cmd_path = ft_get_command_path(minishell->cmds[i], minishell->mini_env);
 		if (!cmd_path)
-			return ;
+			exit(EXIT_FAILURE);
 		execve(cmd_path, minishell->cmds[i], minishell->mini_env);
 		exit(EXIT_FAILURE);
 	}
 	else
 		waitpid(pid, NULL, 0);
-}
-
-void	ft_process_final_cmd(t_mini *minishell, int i)
-{
-	if (ft_search_redir(minishell->cmds[i]))
-	{
-		printf("redirecciones\n");
-		return ;
-	}
-	else
-	{
-		if (ft_is_builtin(minishell, i))
-			printf("builtin\n");
-		else
-			ft_exec_final_cmd(minishell, i);
-	}
-}
-
+}*/
 void	ft_process_final(t_mini *minishell, int i)
 {
 	pid_t	pid;
@@ -139,12 +115,32 @@ void	ft_process_final(t_mini *minishell, int i)
 	{
 		cmd_path = ft_get_command_path(minishell->cmds[i], minishell->mini_env);
 		if (!cmd_path)
-			return ;
+			exit(EXIT_FAILURE);
 		execve(cmd_path, minishell->cmds[i], minishell->mini_env);
+		exit(EXIT_FAILURE);
 	}
 	waitpid(pid, NULL, 0);
 	dup2(minishell->or_infd, STDIN_FILENO);
 }
+void	ft_process_final_cmd(t_mini *minishell, int i)
+{
+	int	j;
+
+	j = -1;
+	if (ft_search_redir(minishell->cmds[i]))
+		ft_process_redir(minishell, i);
+	else
+	{
+		while (minishell->cmds[i][++j])
+			ft_delete_quotes(minishell->cmds[i][j]);
+		if (ft_is_builtin(minishell, i))
+			ft_process_builtin(minishell, i, 0);
+		else
+			ft_process_final(minishell, i);
+	}
+}
+
+
 
 void	ft_process_cmd(t_mini *minishell)
 {
@@ -163,11 +159,11 @@ void	ft_process_cmd(t_mini *minishell)
 		//printf("varios comandos %d\n", len);
 		while (minishell->cmds[++i] && minishell->cmds[i + 1] != NULL)
 			ft_process_multiple_cmds(minishell, i);
-		ft_process_final(minishell, i);
+		ft_process_final_cmd(minishell, i);
 		//ft_process_final_cmd(minishell, i);
 		//ft_get_cmd_attr(minishell->cmds[i], minishell);//, &cmd_utils);
 	}
-	printf("terminado de procesar los comandos\n");
+	//printf("terminado de procesar los comandos\n");
 }
 
 /*
@@ -198,7 +194,6 @@ void	ft_process_input(t_mini *minishell)
 	// separamos el input del usuario por pipes
 	minishell->input_pipes = ft_split_pipes(minishell->input);
 	//ft_print2dstr(minishell->input_pipes);
-	//printf("%s\n", minishell->input_pipes[0]);
 	minishell->cmds = (char ***)malloc(sizeof(char **)
 			* (ft_2dstrlen((const char **)minishell->input_pipes) + 1));
 	if (!minishell->cmds)
@@ -207,8 +202,12 @@ void	ft_process_input(t_mini *minishell)
 	while (minishell->input_pipes[++i])
 		minishell->cmds[++j] = ft_split_input(minishell->input_pipes[i], ' ');
 	minishell->cmds[++j] = NULL;
-	//ft_print3dstr(minishell->cmds);
-	//printf("aqui%s", minishell->cmds[0][0]);
+	if (minishell->cmds[0][0] == NULL)//si nos meten solo espacios sale por aqui
+	{
+		ft_free_2dstr(minishell->input_pipes);
+		ft_free_3dstr(minishell->cmds);
+		return ;
+	}
 	ft_free_2dstr(minishell->input_pipes);
 	minishell->input_pipes = NULL;
 	// APARTIR DE AQUI PUEDE CAMBIAR EL ORDEN. SEGUN COMO VAYA DESARROLLANDO LOS PIPES Y LAS REDIRECCIONES, SE EXPANDIRAN LAS VARIABLES Y SE ELIMINARAN LAS COMILLAS  EN UNA PARTE DEL CODIGO
@@ -217,14 +216,15 @@ void	ft_process_input(t_mini *minishell)
 	while (minishell->cmds[++i])
 		ft_process_expand(minishell->cmds[i], minishell->mini_env);
 	i = -1;
-	while (minishell->cmds[++i])
+	/*while (minishell->cmds[++i])
 	{
 		j = -1;
 		while (minishell->cmds[i][++j])
-			/* esto hay que cambiarlo por mallocs, o igual no */
 			ft_delete_quotes(minishell->cmds[i][j]);
-	}
-	//ft_print3dstr(minishell->cmds);
+	}*/
+	/*printf("Antes de empezar a procesar, los comandos son:\n");
+	ft_print3dstr(minishell->cmds);
+	printf("\n");*/
 	ft_process_cmd(minishell);
 	//ft_process_cmds(minishell);
 	ft_free_3dstr(minishell->cmds);

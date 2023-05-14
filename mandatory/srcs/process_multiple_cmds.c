@@ -29,7 +29,7 @@ void	ft_exec_multiple_cmds(t_mini *minishell, int i)
 			cmd_path = ft_get_command_path(minishell->cmds[i],
 					minishell->mini_env);
 			if (!cmd_path)
-				return ;
+				exit (EXIT_FAILURE);
 			execve(cmd_path, minishell->cmds[i], minishell->mini_env);
 			exit(EXIT_FAILURE);
 		}
@@ -45,8 +45,16 @@ void	ft_exec_multiple_cmds(t_mini *minishell, int i)
 
 void	ft_process_multiple_cmds(t_mini *minishell, int i)
 {
+	int	j;
+
+	j = -1;
 	if (ft_search_redir(minishell->cmds[i]))
 		ft_process_redir(minishell, i);
 	else
-		ft_exec_multiple_cmds(minishell, i);
+	{
+		while (minishell->cmds[i][++j])
+			ft_delete_quotes(minishell->cmds[i][j]);
+		ft_exec_multiple_cmds(minishell, i);		
+	}
+
 }

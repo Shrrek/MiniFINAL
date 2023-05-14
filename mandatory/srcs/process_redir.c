@@ -12,8 +12,12 @@ static void	ft_check_fd(int fd1, int fd2)
 static void	ft_exec_cmd_redir(char **cmds, int *fd, char **env, char *here_doc)
 {
 	pid_t	pid;
+	int		i;
 	char	*cmd_path;
 
+	i = 0;
+	while (cmds[++i])
+		ft_delete_quotes(cmds[i]);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -59,9 +63,14 @@ static int	ft_get_cmds(char ***cmds, char *input)
 	char	*cmd;
 	int		i;
 
-	i = 0;
-	while (input[i] && input[i] != '<' && input[i] != '>')
-		i++;
+	i = -1;
+	while (input[++i])
+	{
+		if (input[i] == 34 || input[i] == 39)
+			ft_pass_quotes(input, &i);
+		if (input[i] == '<' || input[i] == '>')
+			break ;
+	}
 	cmd = ft_substr(input, 0, i);
 	*cmds = ft_split(cmd, ' ');
 	free(cmd);

@@ -4,6 +4,7 @@ static int	ft_get_infile(char *str, int i)
 {
 	int		start;
 	char	*file;
+	int		is_open;
 
 	while (str[++i])
 	{
@@ -15,7 +16,9 @@ static int	ft_get_infile(char *str, int i)
 		if (!str[i] || str[i] == ' ')
 		{
 			file = ft_substr(str, start, i - start);
-			return (open(file, O_RDONLY));
+			is_open = open(file, O_RDONLY);
+			free(file);
+			return (is_open);
 		}
 	}
 	return (-1);

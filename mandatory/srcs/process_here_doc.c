@@ -32,6 +32,8 @@ char	*ft_get_here_doc(char *str)
 	i++;
 	while (str[++i])
 	{
+		/*if (str[i] == 34 || str[i] == 39)
+			ft_pass_quotes(str, &i);*/
 		while (str[i] && str[i] == ' ')
 			i++;
 		start = i;

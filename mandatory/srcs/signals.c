@@ -16,18 +16,19 @@ void	ft_signal_handler(int signal)
 {
 	if (signal == SIGINT) //ctrl c
 	{
-		printf("\n");
+		ft_putstr_fd(0, "\n", 0);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-	} 
-	/*if (signal == SIGINT && proceso hijo)
-	{
-		printf("\n");
-		rl_on_new_line();
 	}
-	if (signal == SIGQUIT && proceso hijo)
-	{
-		printf("Quit.\n");
-	}*/
+	else if (signal == SIGQUIT)
+		return ;
+}
+
+void	ft_child_signal_handler(int signal)
+{
+	if (signal == SIGINT)
+		ft_putstr_fd(0, "\n", 0);
+	if (signal == SIGQUIT)
+		ft_putstr_fd(0, "Quit:\n", 0);
 }

@@ -16,6 +16,8 @@ bool	ft_search_redir(char **cmd)
 		j = -1;
 		while (cmd[i][++j])
 		{
+			if (cmd[i][j] == 34 || cmd[i][j] == 39)
+				ft_pass_quotes(cmd[i], &j);
 			if (cmd[i][j] == '<' || cmd[i][j] == '>')
 				return (true);
 		}
@@ -32,6 +34,8 @@ int	ft_get_redir(char *str, char redir)
 	redir_index = -1;
 	while (str[++i])
 	{
+		if (str[i] == 34 || str[i] == 39)
+			ft_pass_quotes(str, &i);
 		if (str[i] == redir)
 		{
 			if (str[i + 1] == redir)

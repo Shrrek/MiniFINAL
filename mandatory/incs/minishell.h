@@ -105,6 +105,7 @@ void	ft_free_3dstr(char ***str);
 void	ft_process_input(t_mini *minishell);
 void	ft_process_expand(char **str, char **env);
 void	ft_signal_handler(int signal);
+void	ft_child_signal_handler(int signal);
 
 /* PARSE FUNCTIONS */
 char	**ft_split_input(char *str, char c);

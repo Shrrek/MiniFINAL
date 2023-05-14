@@ -53,6 +53,8 @@ char	*ft_get_command_path(char **cmd, char **env)
 	i = 0;
 	while (ft_strncmp(env[i], "PATH=", 5) && env[i])
 		i++;
+	if (!env[i])
+		return (NULL);
 	env_path = ft_split(env[i], ':');
 	tmp = ft_substr(env_path[0], 5, ft_strlen(env_path[0]) - 5);
 	free(env_path[0]);
@@ -61,7 +63,7 @@ char	*ft_get_command_path(char **cmd, char **env)
 	cmd_path = ft_access_command(env_path, cmd[0]);
 	if (!cmd_path)
 	{
-		printf("invalid command\n");
+		ft_putstr_fd(0, "invalid command\n", 0);
 		ft_free_2dstr(env_path);
 		return (NULL);
 	}
