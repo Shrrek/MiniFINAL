@@ -37,7 +37,11 @@ static void	ft_exec_cmd_redir(char **cmds, int *fd, char **env, char *here_doc)
 		exit(EXIT_FAILURE);
 	}
 	else
+	{
 		waitpid(pid, NULL, 0);
+	}
+
+
 }
 
 static void	ft_process_redir_aux(t_mini *minishell,

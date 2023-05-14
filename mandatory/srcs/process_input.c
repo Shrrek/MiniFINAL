@@ -128,7 +128,7 @@ void	ft_process_final_cmd(t_mini *minishell, int i)
 
 	j = -1;
 	if (ft_search_redir(minishell->cmds[i]))
-		ft_process_redir(minishell, i);
+		ft_process_redir_final(minishell, i);
 	else
 	{
 		while (minishell->cmds[i][++j])
