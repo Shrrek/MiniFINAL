@@ -1,23 +1,36 @@
 #include "../incs/minishell.h"
 
+static int	ft_is_in_env(t_mini *minishell, char *var, size_t var_len)
+{
+	int	i;
+
+	i = -1;
+	while (minishell->mini_env[++i])
+	{
+		if (!ft_strncmp(minishell->mini_env[i], var, var_len)
+			|| (!ft_strncmp(minishell->mini_env[i], var, var_len - 1)
+				&& !minishell->mini_env[i][var_len - 1]))
+			return (1);
+	}
+	return (0);
+}
+
 static char	**ft_unset_aux(t_mini *minishell, char *var, size_t var_len)
 {
 	char	**new_env;
 	int		i;
 	int		j;
-	int		len;
 
 	i = 0;
 	j = -1;
-	len = ft_2dstrlen((const char **)minishell->mini_env);
-	new_env = (char **)malloc(sizeof(char *) * len);
+	new_env = (char **)malloc(sizeof(char *)
+			* ft_2dstrlen(minishell->mini_env));
 	if (!new_env)
 		return (NULL);
-	while (i < len)
+	while (minishell->mini_env[i])
 	{
 		if (!ft_strncmp(minishell->mini_env[i], var, var_len)
-			|| (!ft_strncmp(minishell->mini_env[i], var, var_len - 1)
-				&& !minishell->mini_env[i][var_len - 1]))
+			|| !ft_strncmp(minishell->mini_env[i], var, var_len - 1))
 		{
 			while (minishell->mini_env[i])
 			{
@@ -30,8 +43,6 @@ static char	**ft_unset_aux(t_mini *minishell, char *var, size_t var_len)
 			new_env[++j] = ft_strdup(minishell->mini_env[i]);
 		i++;
 	}
-	new_env[++j] = NULL; // lo sabia
-	ft_free_2dstr(new_env);
 	return (NULL);
 }
 
@@ -44,12 +55,15 @@ void	ft_unset(t_mini *minishell, int cmd)
 	int		i;
 
 	i = 0;
-	/*if (minishell->cmds[cmd][1] == NULL)
-		return ;*/
 	while (minishell->cmds[cmd][++i])
 	{
 		var = ft_join_chr(minishell->cmds[cmd][i], '=');
 		var_len = ft_strlen(var);
+		if (!ft_is_in_env(minishell, var, var_len))
+		{
+			free(var);
+			return ;
+		}
 		new_env = ft_unset_aux(minishell, var, var_len);
 		if (!new_env)
 		{

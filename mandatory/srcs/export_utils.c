@@ -12,15 +12,6 @@
 
 #include "../incs/minishell.h"
 
-/*void	ft_print_nbrlst(int *nbr_lst, size_t lst_len)
-{
-	int	i;
-	i = -1;
-	while (lst_len--)
-		printf("%d\n", nbr_lst[++i]);
-}*/
-
-// Comprueba si un numero esta en un array de numeros
 static int	ft_isin_intarr(int nbr, int *nbr_lst, size_t lst_len)
 {
 	while (lst_len--)
@@ -39,15 +30,12 @@ static int	ft_get_smaller_stridx(const char **str,
 	int	index;
 
 	index = 0;
-	// Setea index con el indice la primera cadena de la lista que no esta en la lista de numeros
 	while (ft_isin_intarr(index, nbr_lst, lst_len) == 1)
 		index++;
-	// Se iguala i con index para que empiece a comparar con la siguiente cadena
 	i = index;
 	while (str[++i] != NULL)
 	{
 		j = 0;
-		// Si el indice de la cadena que va a comparar ya esta en la lista de indices pasa al siguiente.
 		if (ft_isin_intarr(i, nbr_lst, lst_len) == 1)
 			continue ;
 		while (str[index][j] == str[i][j])
@@ -65,7 +53,7 @@ int	*ft_get_2dstr_order(const char **str)
 	int		lst_len;
 
 	lst_len = 0;
-	len = ft_2dstrlen(str);
+	len = ft_2dstrlen((char **)str);
 	pos_lst = (int *)malloc(sizeof(int) * (len));
 	if (!pos_lst)
 		return (NULL);
@@ -75,5 +63,4 @@ int	*ft_get_2dstr_order(const char **str)
 		lst_len++;
 	}
 	return (pos_lst);
-	// ft_print_nbrlst(pos_lst, lst_len);
 }

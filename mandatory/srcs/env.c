@@ -12,18 +12,23 @@
 
 #include "../incs/minishell.h"
 
-/*
- * Muestra todas las variables del sistema con valor. Como su salida se puede redireccionar,
- * recibe el fd de salida especificado por el usuario.
- */
 void	ft_env(char **env, int outfd)
 {
 	int	i;
+	int	index;
 
 	i = -1;
 	while (env[++i])
 	{
-		if (ft_strchr(env[i], '=') != -1)
-			ft_putstr_fd(outfd, env[i], 1);
+		if (ft_strcmp(env[i], "="))
+			continue ;
+		index = ft_strchr(env[i], '=');
+		if (index == 0)
+			continue ;
+		if (index != -1)
+		{
+			if (env[i][index - 1] != ' ')
+				ft_putstr_fd(outfd, env[i], 1);
+		}
 	}
 }

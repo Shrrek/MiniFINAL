@@ -1,23 +1,25 @@
 #include "../incs/minishell.h"
 
-void	ft_process_here_doc(char *delimiter)
+void	ft_process_here_doc(t_mini *minishell)
 {
 	int		fd[2];
 	char	*line;
 	char	*tmp;
 
+	dup2(minishell->or_infd, STDIN_FILENO);
 	pipe(fd);
 	while (1)
 	{
 		line = readline("");
-		if (ft_strcmp(line, delimiter))
+		if (ft_strcmp(line, minishell->here_doc))
 			break ;
 		tmp = line;
 		line = ft_join_chr(line, '\n');
 		free(tmp);
-		write(fd[1], line, ft_strlen(line));
+		ft_putstr_fd(fd[1], line, 0);
 		free(line);
 	}
+	free(line);
 	close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
@@ -32,8 +34,6 @@ char	*ft_get_here_doc(char *str)
 	i++;
 	while (str[++i])
 	{
-		/*if (str[i] == 34 || str[i] == 39)
-			ft_pass_quotes(str, &i);*/
 		while (str[i] && str[i] == ' ')
 			i++;
 		start = i;

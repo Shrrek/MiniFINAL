@@ -1,6 +1,7 @@
 #include "../incs/minishell.h"
 
-static void	ft_exec_multiple_parent(t_mini *minishell, pid_t pid, int *fd_pipe)
+/* CONTROLAR SI ALGUN FD ES NEFGATIVO NO SE PROCVESAN LOS COMANDOS */
+static void	ft_exec_final_parent(t_mini *minishell, pid_t pid)
 {
 	int			status;
 	extern int	g_status;
@@ -8,9 +9,6 @@ static void	ft_exec_multiple_parent(t_mini *minishell, pid_t pid, int *fd_pipe)
 	signal(SIGINT, ft_child_signal_handler);
 	signal(SIGQUIT, ft_child_signal_handler);
 	waitpid(pid, &status, 0);
-	close(fd_pipe[1]);
-	dup2(fd_pipe[0], STDIN_FILENO);
-	close(fd_pipe[0]);
 	if (WIFEXITED(status))
 		g_status = WEXITSTATUS(status);
 	signal(SIGINT, ft_signal_handler);
@@ -20,22 +18,18 @@ static void	ft_exec_multiple_parent(t_mini *minishell, pid_t pid, int *fd_pipe)
 		free(minishell->here_doc);
 		minishell->here_doc = NULL;
 	}
-	free(fd_pipe);
+	dup2(minishell->or_infd, STDIN_FILENO);
 }
 
-static void	ft_exec_multiple_child(t_mini *minishell,
-	int *fd, int i, int *fd_pipe)
+static void	ft_exec_final_child(t_mini *minishell, int *fd, int i)
 {
 	char	*cmd_path;
 
 	minishell->or_outfd = dup(STDOUT_FILENO);
-	if (minishell->here_doc)
-		ft_process_here_doc(minishell);
-	close(fd_pipe[0]);
-	dup2(fd_pipe[1], STDOUT_FILENO);
-	close(fd_pipe[1]);
 	if (fd)
 		ft_check_fd(fd[0], STDIN_FILENO);
+	if (minishell->here_doc)
+		ft_process_here_doc(minishell);
 	if (fd)
 		ft_check_fd(fd[1], STDOUT_FILENO);
 	if (ft_is_builtin(minishell, i))
@@ -51,28 +45,23 @@ static void	ft_exec_multiple_child(t_mini *minishell,
 	exit(127);
 }
 
-static void	ft_exec_multiple_cmds(t_mini *minishell, int i, int *fd)
+static void	ft_exec_final_cmd(t_mini *minishell, int i, int *fd)
 {
 	pid_t	pid;
-	int		*fd_pipe;
 
-	fd_pipe = (int *)ft_calloc(2, sizeof(int));
-	if (!fd_pipe)
-		return ;
-	pipe(fd_pipe);
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
 		return ;
 	}
-	else if (pid == 0)
-		ft_exec_multiple_child(minishell, fd, i, fd_pipe);
+	if (pid == 0)
+		ft_exec_final_child(minishell, fd, i);
 	else
-		ft_exec_multiple_parent(minishell, pid, fd_pipe);
+		ft_exec_final_parent(minishell, pid);
 }
 
-void	ft_process_multiple_cmds(t_mini *minishell, int i)
+void	ft_process_final_cmd(t_mini *minishell, int i)
 {
 	int	j;
 	int	*fd;
@@ -84,10 +73,10 @@ void	ft_process_multiple_cmds(t_mini *minishell, int i)
 	while (minishell->cmds[i][++j])
 		ft_delete_quotes(minishell->cmds[i][j]);
 	if (fd && fd[0] != -1 && fd[1] != -1)
-		ft_exec_multiple_cmds(minishell, i, fd);
+		ft_exec_final_cmd(minishell, i, fd);
 	else if (!fd)
 	{
-		ft_exec_multiple_cmds(minishell, i, fd);
+		ft_exec_final_cmd(minishell, i, fd);
 		return ;
 	}
 	if (fd)

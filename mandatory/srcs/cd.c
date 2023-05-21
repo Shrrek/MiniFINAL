@@ -12,7 +12,7 @@
 
 #include "../incs/minishell.h"
 
-void	ft_change_env(t_mini *minishell, char *str, char *var)
+static void	ft_change_env(t_mini *minishell, char *str, char *var)
 {
 	int		i;
 	char	*tmp;
@@ -32,12 +32,9 @@ void	ft_change_env(t_mini *minishell, char *str, char *var)
 	}
 }
 
-/*
- * 
- */
 void	ft_cd(t_mini *minishell, int cmd)
 {
-	if (ft_2dstrlen((const char **)minishell->cmds[cmd]) == 1)
+	if (ft_2dstrlen(minishell->cmds[cmd]) == 1)
 	{
 		chdir(minishell->mini_home);
 		ft_change_env(minishell, "PWD=", minishell->mini_home);

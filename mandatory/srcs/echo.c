@@ -18,7 +18,7 @@ static void	ft_write_args(char **cmd, int fd)
 	int	len;
 
 	i = 0;
-	len = (int)ft_2dstrlen((const char **)cmd) - 1;
+	len = (int)ft_2dstrlen(cmd) - 1;
 	while (cmd[++i])
 	{
 		if (i == len)
@@ -49,7 +49,8 @@ static int	ft_check_n(char *str)
 }
 
 /*
- * Procesa el comando echo. Redirige el programa dependiendo de si el usuario ha introducido
+ * Procesa el comando echo. Redirige el programa dependiendo 
+ *de si el usuario ha introducido
  * el argumento -n o no.
  */
 void	ft_echo(t_mini *minishell, int cmd, int fd)

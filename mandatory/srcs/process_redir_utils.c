@@ -1,8 +1,5 @@
 #include "../incs/minishell.h"
 
-/*
- *
- */
 bool	ft_search_redir(char **cmd)
 {
 	int	i;

@@ -12,33 +12,24 @@
 
 #include "../incs/minishell.h"
 
-/*
- * Comprueba que el primer pipe del input tenga un comando que procesar.
- * Si lo primero que se encuentra es un pipe, o si solo encuentra espacios
- * hasta el primer pipe devuelve 1 denotando el error.
- *
- */
-static int	ft_start_pipe(char *input)
+static bool	ft_start_pipe(char *input)
 {
 	int	i;
 
 	i = 0;
 	if (input[i] == '|')
-		return (1);
+		return (true);
 	while (input[i] && input[i] == ' ')
 	{
+		if (input[i] == 34 || input[i] == 39)
+			ft_pass_quotes(input, &i);
 		i++;
 		if (input[i] == '|')
-			return (1);
+			return (true);
 	}
-	return (0);
+	return (false);
 }
 
-/*
- *
- *
- *
- */
 static int	ft_end_pipe(char *input)
 {
 	int	i;
@@ -61,11 +52,6 @@ static int	ft_end_pipe(char *input)
 	return (0);
 }
 
-/*
- * Funcion que comprueba que no exista ningun pipe sin contenido en mitad del input del usuario
- * En primer lugar recorre la cadena hasta llegar al primer pipe. 
- *
- */
 static int	ft_middle_pipes(char *input)
 {
 	int	i;
@@ -73,13 +59,15 @@ static int	ft_middle_pipes(char *input)
 	i = 0;
 	while (input[i])
 	{
+		if (input[i] == 34 || input[i] == 39)
+			ft_pass_quotes(input, &i);
 		i++;
 		if (input[i] == '|')
 		{
 			i++;
 			if (input[i] == '|')
 				return (1);
-			while (input[i] == ' ' && input[i])
+			while (input[i] && input[i] == ' ')
 			{
 				i++;
 				if (input[i] == '|')
@@ -90,11 +78,6 @@ static int	ft_middle_pipes(char *input)
 	return (0);
 }
 
-/*
- * Funcion que comprueba si hay algun error de pipes en el input del usuario.
- * Comprueba que no haya ningun pipe sin contenido que pipear y muestra su mensaje
- * de error correspondiente.
- */
 bool	ft_parse_pipes(char *str)
 {
 	bool	error;

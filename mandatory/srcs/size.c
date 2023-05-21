@@ -1,6 +1,6 @@
 #include "../incs/minishell.h"
 
-size_t	ft_strlen(const char *str)
+size_t	ft_strlen(char *str)
 {
 	size_t	i;
 
@@ -12,7 +12,7 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-size_t	ft_2dstrlen(const char **str)
+size_t	ft_2dstrlen(char **str)
 {
 	size_t	i;
 
@@ -36,7 +36,7 @@ size_t	ft_3dstrlen(char ***str)
 	return (i);
 }
 
-int	ft_get_chrlen(const char *str, int c)
+int	ft_get_chrlen(char *str, int c)
 {
 	int	i;
 

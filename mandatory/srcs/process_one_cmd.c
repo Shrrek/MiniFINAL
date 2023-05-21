@@ -1,90 +1,112 @@
 #include "../incs/minishell.h"
 
-static void	ft_exec_one_cmd(t_mini *minishell)
+static void	ft_exec_one_parent(t_mini *minishell, pid_t pid)
+{
+	int			status;
+	extern int	g_status;
+
+	signal(SIGINT, ft_child_signal_handler);
+	signal(SIGQUIT, ft_child_signal_handler);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		g_status = WEXITSTATUS(status);
+	signal(SIGINT, ft_signal_handler);
+	signal(SIGQUIT, ft_signal_handler);
+	if (minishell->here_doc)
+	{
+		free(minishell->here_doc);
+		minishell->here_doc = NULL;
+	}
+	dup2(minishell->or_infd, STDIN_FILENO);
+}
+
+static void	ft_exec_one_child(t_mini *minishell, int *fd)
+{
+	char	*cmd_path;
+
+	minishell->or_outfd = dup(STDOUT_FILENO);
+	if (minishell->here_doc)
+		ft_process_here_doc(minishell);
+	if (fd)
+		ft_check_fd(fd[0], STDIN_FILENO);
+	if (fd)
+		ft_check_fd(fd[1], STDOUT_FILENO);
+	if (minishell->cmds[0][0][0] == '/' || (minishell->cmds[0][0][0]
+		== '.' && minishell->cmds[0][0][1] == '/'))
+	{
+		execve(minishell->cmds[0][0], minishell->cmds[0],
+			minishell->mini_env);
+		exit(EXIT_FAILURE);
+	}
+	cmd_path = ft_get_command_path(minishell->cmds[0],
+			minishell->mini_env, minishell);
+	if (!cmd_path)
+		exit(127);
+	execve(cmd_path, minishell->cmds[0], minishell->mini_env);
+	exit(127);
+}
+
+static void	ft_exec_one_cmd(t_mini *minishell, int *fd)
 {
 	pid_t	pid;
-	char	*cmd_path;
-	
-	printf("El comando que le llega es:\n");
-	ft_print2dstr(minishell->cmds[0]);
-	signal(SIGINT, SIG_DFL);
+
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
 		return ;
 	}
-	else if (pid == 0)
-	{
-		if (!minishell->cmds || !minishell->cmds[0] || !minishell->cmds[0][0] || !minishell->cmds[0][0][0])
-			exit (EXIT_FAILURE);
-		if (minishell->cmds[0][0][0] == '/')
-		{
-			execve(minishell->cmds[0][0], minishell->cmds[0],
-				minishell->mini_env);
-			exit(EXIT_FAILURE);
-		}
-		cmd_path = ft_get_command_path(minishell->cmds[0], minishell->mini_env);
-		if (!cmd_path)
-			exit(EXIT_FAILURE);
-		execve(cmd_path, minishell->cmds[0], minishell->mini_env);
-		exit(EXIT_FAILURE);
-	}
+	if (pid == 0)
+		ft_exec_one_child(minishell, fd);
 	else
-	{
-		signal(SIGINT, ft_child_signal_handler);
-		signal(SIGQUIT, ft_child_signal_handler);
-		waitpid(pid, NULL, 0);
-		signal(SIGINT, ft_signal_handler);
-		signal(SIGQUIT, ft_signal_handler);
-	}
-
+		ft_exec_one_parent(minishell, pid);
 }
 
-/*static void	ft_history_exit(t_mini *minishell)
+static int	ft_process_one_bultin(t_mini *minishell, int *fd)
 {
-	if (ft_strcmp(minishell->cmds[0][0], "exit"))
-		exit(EXIT_SUCCESS);
-	if (ft_strcmp(minishell->cmds[0][0], "history"))
-	{
-		if (ft_strcmp(minishell->cmds[0][1], "-c"))
-			printf("history\n");
-	}
-}*/
+	int	exit_status;
 
-void	ft_process_one_cmd(t_mini *minishell)
+	if (fd && fd[1] != 0)
+	{
+		exit_status = ft_process_builtin(minishell, 0, fd[1]);
+		if (fd)
+			free(fd);
+		return (exit_status);
+	}
+	exit_status = ft_process_builtin(minishell, 0, 0);
+	if (fd)
+		free(fd);
+	return (exit_status);
+}
+
+int	ft_process_one_cmd(t_mini *minishell)
 {
 	int	j;
+	int	*fd;
 
-	j = 0;
-	ft_delete_quotes(minishell->cmds[0][0]);
-	if (ft_strcmp(minishell->cmds[0][0], "exit"))
-		exit(EXIT_SUCCESS);
-	else if (ft_strcmp(minishell->cmds[0][0], "history"))
+	j = -1;
+	fd = NULL;
+	if (ft_search_redir(minishell->cmds[0]))
+		fd = ft_process_redir(minishell, 0);
+	while (minishell->cmds[0][++j])
+		ft_delete_quotes(minishell->cmds[0][j]);
+	if (fd && fd[0] != -1 && fd[1] != -1)
 	{
-		if (ft_strcmp(minishell->cmds[0][1], "-c"))
-			printf("history\n");
-	}
-	else if (ft_search_redir(minishell->cmds[0]))
-	{
-		printf("reidr\n");
-		ft_process_redir(minishell, 0);
-	}
-	else
-	{
-		while (minishell->cmds[0][++j])
-			ft_delete_quotes(minishell->cmds[0][j]);
 		if (ft_is_builtin(minishell, 0))
-			ft_process_builtin(minishell, 0, 0);
-		else
-			ft_exec_one_cmd(minishell);
+			return (ft_process_one_bultin(minishell, fd));
+		ft_exec_one_cmd(minishell, fd);
+		if (fd)
+			free(fd);
+		return (0);
 	}
+	if (!fd)
+	{
+		if (ft_is_builtin(minishell, 0))
+			return (ft_process_one_bultin(minishell, fd));
+		ft_exec_one_cmd(minishell, fd);
+		return (0);
+	}
+	if (fd)
+		free(fd);
+	return (0);
 }
-
-/*
-hasta ahora para identificar de que fd reciben las entradas los comandos identifica que tipoi de redireccion de entrada final tiene el comando y en funciuon de eso ejecutaba una y otra opcion
-Ahora yo tengo que identificar con una funcion si la ultima redireccion es un here-doc o no.
-	- esta funcion devuelve 0 si no habia una redireccion, 1 si la redireccion es normal y 2 si es un here doc
-Si es un here_doc:
-	- lo primero que tengo que hacer es 
-*/

@@ -14,8 +14,11 @@
 
 void	ft_signal_handler(int signal)
 {
-	if (signal == SIGINT) //ctrl c
+	extern int	g_status;
+
+	if (signal == SIGINT)
 	{
+		g_status = 1;
 		ft_putstr_fd(0, "\n", 0);
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -27,8 +30,13 @@ void	ft_signal_handler(int signal)
 
 void	ft_child_signal_handler(int signal)
 {
+	extern int	g_status;
+
 	if (signal == SIGINT)
+	{
 		ft_putstr_fd(0, "\n", 0);
+		g_status = 130;
+	}
 	if (signal == SIGQUIT)
-		ft_putstr_fd(0, "Quit:\n", 0);
+		ft_putstr_fd(0, "Quit: 3\n", 0);
 }

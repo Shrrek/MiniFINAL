@@ -59,4 +59,8 @@ void	ft_general_free(t_mini *minishell)
 		ft_free_str(minishell->input);
 	if (minishell->curr_path)
 		ft_free_str(minishell->curr_path);
+	if (minishell->here_doc)
+		free(minishell->here_doc);
+	if (minishell->cmds)
+		ft_free_3dstr(minishell->cmds);
 }

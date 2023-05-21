@@ -12,6 +12,26 @@
 
 #include "../incs/minishell.h"
 
+int	ft_atoi(const char *str)
+{
+	int		result;
+	ssize_t	sign;
+
+	result = 0;
+	sign = 1;
+	while ((*str >= 9 && *str <= 13) || *str == 32)
+		str++;
+	if (*str == 43 || *str == 45)
+	{
+		if (*str == 45)
+			sign = -1;
+		str++;
+	}
+	while (ft_isdigit(*str))
+		result = (*str++ - 48) + (result * 10);
+	return (result * sign);
+}
+
 static int	ft_2dcontlen(char **str)
 {
 	int	len;
@@ -23,7 +43,7 @@ static int	ft_2dcontlen(char **str)
 	count = 0;
 	if (!str)
 		return (0);
-	len = ft_2dstrlen((const char **)str);
+	len = ft_2dstrlen(str);
 	while (str[++i])
 	{
 		j = -1;
@@ -43,7 +63,7 @@ char	*ft_2dtostr(char **str)
 	int		k;
 	int		len;
 
-	len = ft_2dstrlen((const char **)str);
+	len = ft_2dstrlen(str);
 	if (!str)
 		return (NULL);
 	dst = (char *)malloc(sizeof(char) * (ft_2dcontlen(str) + 1));

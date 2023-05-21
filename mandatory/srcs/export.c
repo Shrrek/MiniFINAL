@@ -42,14 +42,20 @@ static void	ft_print2dstr_export(char **str)
 	free(pos_lst);
 }
 
-char	**ft_create_newenv(char **env, char *new_var)
+static char	**ft_create_newenv(char **env, char *new_var)
 {
 	char	**new_env;
 	size_t	env_len;
 	int		i;
 
 	i = -1;
-	env_len = ft_2dstrlen((const char **)env) + 2;
+	if (new_var[0] == '=')
+	{
+		ft_putstr_fd(0, "Minitabaqueros: export: `=': not a valid identifier\n",
+			0);
+		return (env);
+	}
+	env_len = ft_2dstrlen(env) + 2;
 	new_env = (char **)malloc(sizeof(char *) * env_len);
 	if (!new_env)
 		return (NULL);
@@ -61,7 +67,7 @@ char	**ft_create_newenv(char **env, char *new_var)
 	return (new_env);
 }
 
-int	ft_export_var(t_mini *minishell, int i, int j, int k)
+static int	ft_export_var(t_mini *minishell, int i, int j, int k)
 {
 	char	**env_var_split;
 	char	**input_split;
@@ -69,17 +75,20 @@ int	ft_export_var(t_mini *minishell, int i, int j, int k)
 
 	input_split = ft_split(minishell->cmds[i][j], '=');
 	env_var_split = ft_split(minishell->mini_env[k], '=');
-	if (ft_strcmp(input_split[0], env_var_split[0]))
+	if (!ft_strcmp(input_split[0], "="))
 	{
-		if (ft_strchr(minishell->cmds[i][j], '=') != -1)
+		if (ft_strcmp(input_split[0], env_var_split[0]))
 		{
-			tmp = minishell->mini_env[k];
-			minishell->mini_env[k] = ft_strdup(minishell->cmds[i][j]);
-			free(tmp);
-		}
-		ft_free_2dstr(env_var_split);
-		ft_free_2dstr(input_split);
-		return (1);
+			if (ft_strchr(minishell->cmds[i][j], '=') != -1)
+			{
+				tmp = minishell->mini_env[k];
+				minishell->mini_env[k] = ft_strdup(minishell->cmds[i][j]);
+				free(tmp);
+			}
+			ft_free_2dstr(env_var_split);
+			ft_free_2dstr(input_split);
+			return (1);
+		}		
 	}
 	ft_free_2dstr(env_var_split);
 	ft_free_2dstr(input_split);
@@ -92,7 +101,7 @@ void	ft_export(t_mini *minishell, int i)
 	int	k;
 
 	j = 0;
-	if (ft_2dstrlen((const char **)minishell->cmds[i]) == 1)
+	if (ft_2dstrlen(minishell->cmds[i]) == 1)
 		ft_print2dstr_export(minishell->mini_env);
 	else
 	{

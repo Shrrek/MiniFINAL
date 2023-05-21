@@ -1,46 +1,16 @@
 #include "../incs/minishell.h"
 
-static size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
-{
-	size_t	dstl;
-	size_t	srcl;
-	size_t	i;
-
-	dstl = ft_strlen(dst);
-	srcl = ft_strlen(src);
-	i = dstl;
-	if (dstl >= dstsize)
-		return (dstsize + srcl);
-	while (dstl < dstsize - 1 && *src)
-		*(dst + dstl++) = *src++;
-	*(dst + dstl) = '\0';
-	return (i + srcl);
-}
-
-static char	*ft_strncpy(char *dst, const char *src, size_t len)
-{
-	if (len == 0)
-		return (dst);
-	while (*src && --len)
-		*dst++ = *src++;
-	while (--len)
-		*dst++ = '\0';
-	*dst = '\0';
-	return (dst);
-}
-
 char	*ft_substr(const char *str, unsigned int start, size_t len)
 {
-	// printf("\nsubstr\n");
 	size_t	new_len;
 	char	*dst;
 
 	if (!str)
 		return (NULL);
-	if (start > ft_strlen(str))
+	if (start > ft_strlen((char *)str))
 		return (ft_strdup(""));
 	str = str + start;
-	new_len = ft_strlen(str);
+	new_len = ft_strlen((char *)str);
 	if (len > new_len)
 		len = new_len;
 	dst = ft_strndup(str, len);
@@ -55,8 +25,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	if (!s1 || !s2)
 		return (NULL);
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
+	s1_len = ft_strlen((char *)s1);
+	s2_len = ft_strlen((char *)s2);
 	dest = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1));
 	if (!dest)
 		return (NULL);

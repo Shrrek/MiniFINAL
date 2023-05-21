@@ -39,21 +39,3 @@ int	ft_strncmp(const char *str1, const char *str2, int n)
 	}
 	return (*str1 - *str2);
 }
-
-/*
- * Busca la primera aparación de un caracter en una cadena y devuelve la posicion en la que se encuentra.
- * Si no encuentra el caracter devuelve -1.
- */
-int	ft_strchr(const char *str, int c)
-{
-	int	i;
-
-	i = -1;
-	// printf("cadena en strchr = %s\n", str);
-	while (str[++i])
-	{
-		if (str[i] == c)
-			return (i);
-	}
-	return (-1);
-}
