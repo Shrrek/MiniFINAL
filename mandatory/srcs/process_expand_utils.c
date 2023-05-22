@@ -31,11 +31,6 @@ char	*ft_var_not_found(char *str, char *var)
 	return (new_value);
 }
 
-/*static void	ft_expand_aux_two(char *new_value, char *str, char *var_value)
-{
-
-}*/
-
 static void	ft_expand_aux(char *new_value, char *str, char *var_value)
 {
 	int	i;

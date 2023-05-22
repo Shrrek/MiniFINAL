@@ -36,6 +36,13 @@ static int	ft_parse_input(t_mini *minishell)
 	return (1);
 }
 
+static	int	ft_process_input_aux(t_mini *minishell)
+{
+	ft_free_3dstr(minishell->cmds);
+	minishell->cmds = NULL;
+	return (0);
+}
+
 int	ft_process_input(t_mini *minishell)
 {
 	int			i;
@@ -55,11 +62,7 @@ int	ft_process_input(t_mini *minishell)
 	minishell->cmds[++j] = NULL;
 	ft_free_2dstr(minishell->input_pipes);
 	if (minishell->cmds[0][0] == NULL)
-	{
-		ft_free_3dstr(minishell->cmds);
-		minishell->cmds = NULL;
-		return (0);
-	}
+		return (ft_process_input_aux(minishell));
 	i = -1;
 	while (minishell->cmds[++i])
 		ft_process_expand(minishell->cmds[i], minishell->mini_env);
