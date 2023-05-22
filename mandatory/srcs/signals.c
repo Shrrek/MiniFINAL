@@ -38,5 +38,8 @@ void	ft_child_signal_handler(int signal)
 		g_status = 130;
 	}
 	if (signal == SIGQUIT)
+	{
 		ft_putstr_fd(0, "Quit: 3\n", 0);
+		g_status = 131;
+	}
 }

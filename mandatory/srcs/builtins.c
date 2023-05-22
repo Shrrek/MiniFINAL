@@ -37,6 +37,31 @@ static int	ft_process_builtin_aux(t_mini *minishell, int i)
 	return (0);
 }
 
+static int	ft_process_builtin_aux_two(t_mini *minishell, int i, int outfd)
+{
+	extern int	g_status;
+
+	if (ft_strcmp(minishell->cmds[i][0], "env"))
+	{
+		if (minishell->cmds[i][1] == NULL)
+			ft_env(minishell->mini_env, outfd);
+		else
+			ft_putstr_fd(0, "Error. No arguments for env command.\n", 0);
+	}
+	else if (ft_strcmp(minishell->cmds[i][0], "echo"))
+		ft_echo(minishell, i, outfd);
+	else if (ft_strcmp(minishell->cmds[i][0], "pwd"))
+		ft_putstr_fd(outfd, getcwd(minishell->curr_path, PATH_MAX), 1);
+	else if (ft_strcmp(minishell->cmds[i][0], "cd"))
+		ft_cd(minishell, i);
+	else if (ft_strcmp(minishell->cmds[i][0], "unset"))
+		ft_unset(minishell, i);
+	else if (ft_strcmp(minishell->cmds[i][0], "export"))
+		ft_export(minishell, i);
+	g_status = 0;
+	return (0);
+}
+
 int	ft_process_builtin(t_mini *minishell, int i, int outfd)
 {
 	extern int	g_status;
@@ -46,26 +71,7 @@ int	ft_process_builtin(t_mini *minishell, int i, int outfd)
 		ft_str_is_digit(minishell->cmds[i][0]))
 		return (ft_process_builtin_aux(minishell, i));
 	else
-	{
-		if (ft_strcmp(minishell->cmds[i][0], "env"))
-		{
-			if (minishell->cmds[i][1] == NULL)
-				ft_env(minishell->mini_env, outfd);
-			else
-				ft_putstr_fd(0, "Error. No arguments for env command.\n", 0);
-		}
-		else if (ft_strcmp(minishell->cmds[i][0], "echo"))
-			ft_echo(minishell, i, outfd);
-		else if (ft_strcmp(minishell->cmds[i][0], "pwd"))
-			ft_putstr_fd(outfd, getcwd(minishell->curr_path, PATH_MAX), 1);
-		else if (ft_strcmp(minishell->cmds[i][0], "cd"))
-			ft_cd(minishell, i);
-		else if (ft_strcmp(minishell->cmds[i][0], "unset"))
-			ft_unset(minishell, i);
-		else if (ft_strcmp(minishell->cmds[i][0], "export"))
-			ft_export(minishell, i);
-		g_status = 0;
-	}
+		return (ft_process_builtin_aux_two(minishell, i, outfd));
 	return (0);
 }
 

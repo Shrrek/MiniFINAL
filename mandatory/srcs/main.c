@@ -15,11 +15,6 @@
 
 int	g_status;
 
-static void	meter_input_archivo(char *input, int fd_archivo)
-{
-	ft_putstr_fd(fd_archivo, input, 1);
-}
-
 static void	ft_init(t_mini *minishell, const char **env)
 {
 	minishell->exit_status = 0;

@@ -61,11 +61,35 @@ static bool	ft_check_middle_redir(t_mini *minishell, int i, char redir)
 	return (false);
 }
 
+static bool	ft_parse_redir_aux(t_mini *minishell, int i, int start, char redir)
+{
+	bool	redir_error;
+	char	*msg;
+	char	*msg2;
+
+	msg = "Minitabaqueros: syntax error near unexpected token `newline'\n";
+	msg2 = "Minitabaqueros: syntax error near unexpected token `";
+	redir_error = ft_check_begin_redir(minishell, &redir, start);
+	if (redir_error == true)
+	{
+		ft_putstr_fd(0, msg, 0);
+		return (false);
+	}
+	redir_error = ft_check_middle_redir(minishell, i, redir);
+	if (redir_error == true)
+	{
+		ft_putstr_fd(0, msg2, 0);
+		write(0, &redir, 1);
+		ft_putstr_fd(0, "'\n", 0);
+		return (false);
+	}
+	return (true);
+}
+
 bool	ft_parse_redir(t_mini *minishell)
 {
 	int		start;
 	char	redir;
-	bool	redir_error;
 	int		i;
 
 	start = 0;
@@ -77,22 +101,7 @@ bool	ft_parse_redir(t_mini *minishell)
 		if (minishell->input[i] == '|')
 			start = i;
 		if (ft_is_redir(minishell->input[i], &redir))
-		{
-			redir_error = ft_check_begin_redir(minishell, &redir, start);
-			if (redir_error == true)
-			{
-				ft_putstr_fd(0, "Minitabaqueros: syntax error near unexpected token `newline'\n", 0);
-				return (false);
-			}
-			redir_error = ft_check_middle_redir(minishell, i, redir);
-			if (redir_error == true)
-			{
-				ft_putstr_fd(0, "Minitabaqueros: syntax error near unexpected token `", 0);
-				write(0, &redir, 1);
-				ft_putstr_fd(0, "'\n", 0);
-				return (false);
-			}
-		}
+			return (ft_parse_redir_aux(minishell, i, start, redir));
 		i++;
 	}
 	return (true);
