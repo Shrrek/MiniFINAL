@@ -33,10 +33,7 @@ static char	**ft_unset_aux(t_mini *minishell, char *var, size_t var_len)
 			|| !ft_strncmp(minishell->mini_env[i], var, var_len - 1))
 		{
 			while (minishell->mini_env[i])
-			{
-				new_env[++j] = ft_strdup(minishell->mini_env[i + 1]);
-				i++;
-			}
+				new_env[++j] = ft_strdup(minishell->mini_env[(i++) + 1]);
 			return (new_env);
 		}
 		else
@@ -46,12 +43,22 @@ static char	**ft_unset_aux(t_mini *minishell, char *var, size_t var_len)
 	return (NULL);
 }
 
+static	void	ft_unset_free(t_mini *minishell, char **new_env, char *var)
+{
+	char	**tmp;
+
+	tmp = minishell->mini_env;
+	minishell->mini_env = ft_2dstrdup((const char **)new_env);
+	ft_free_2dstr(tmp);
+	ft_free_2dstr(new_env);
+	free(var);
+}
+
 void	ft_unset(t_mini *minishell, int cmd)
 {
 	size_t	var_len;
 	char	*var;
 	char	**new_env;
-	char	**tmp;
 	int		i;
 
 	i = 0;
@@ -70,10 +77,6 @@ void	ft_unset(t_mini *minishell, int cmd)
 			free(var);
 			continue ;
 		}
-		tmp = minishell->mini_env;
-		minishell->mini_env = ft_2dstrdup((const char **)new_env);
-		ft_free_2dstr(tmp);
-		ft_free_2dstr(new_env);
-		free(var);
+		ft_unset_free(minishell, new_env, var);
 	}
 }

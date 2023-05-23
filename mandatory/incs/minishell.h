@@ -106,6 +106,8 @@ bool	ft_parse_pipes(char *str);
 
 /* PARSE QUOTES UTILS */
 char	**ft_split_input(char *str, char c);
+void	ft_process_quote(const char *str, int *i, char quote);
+void	ft_process_spaces(const char *str, int *i, int *start, char c);
 
 /* PARSE QUOTES */
 bool	ft_quote_pairs(char *str);
@@ -146,6 +148,8 @@ void	ft_process_multiple_cmds(t_mini *minishell, int i);
 
 /* PROCESS ONE CMD FUNCTIONS */
 int		ft_process_one_cmd(t_mini *minishell);
+void	ft_exec_one_parent(t_mini *minishell, pid_t pid);
+void	ft_exec_one_child(t_mini *minishell, int *fd);
 
 /* PROCESS REDIR UTILS */
 bool	ft_search_redir(char **cmd);

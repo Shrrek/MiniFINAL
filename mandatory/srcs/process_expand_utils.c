@@ -1,5 +1,13 @@
 #include "../incs/minishell.h"
 
+static	void	ft_var_not_found_aux(int *i, char *str)
+{
+	(*i)++;
+	while (str[*i] && str[*i] != 34 && str[*i] != '$'
+		&& str[*i] != 32 && str[*i] != 39 && str[*i] != '=')
+		(*i)++;
+}
+
 char	*ft_var_not_found(char *str, char *var)
 {
 	int		i;
@@ -18,10 +26,7 @@ char	*ft_var_not_found(char *str, char *var)
 	{
 		if (str[i] == '$' && str[i + 1] != ' ' && qty == 0)
 		{
-			i++;
-			while (str[i] && str[i] != 34 && str[i] != '$'
-				&& str[i] != 32 && str[i] != 39 && str[i] != '=')
-				i++;
+			ft_var_not_found_aux(&i, str);
 			qty = 1;
 		}
 		else
@@ -29,6 +34,13 @@ char	*ft_var_not_found(char *str, char *var)
 	}
 	new_value[++j] = '\0';
 	return (new_value);
+}
+
+static	void	ft_expand_aux2(char *str, int *i, int *j, char *new_value)
+{
+	while (str[*i])
+		new_value[++(*j)] = str[(*i)++];
+	new_value[++(*j)] = '\0';
 }
 
 static void	ft_expand_aux(char *new_value, char *str, char *var_value)
@@ -56,9 +68,7 @@ static void	ft_expand_aux(char *new_value, char *str, char *var_value)
 		else
 			new_value[++j] = str[i++];
 	}
-	while (str[i])
-		new_value[++j] = str[i++];
-	new_value[++j] = '\0';
+	ft_expand_aux2(str, &i, &j, new_value);
 }
 
 char	*ft_expand(char *var, char *var_value, char *str)

@@ -21,6 +21,7 @@ SRCS =  $M$Sbuiltins.c\
 		$M$Sparse_pipes_utils.c\
 		$M$Sparse_pipes.c\
 		$M$Sparse_quotes_utils.c\
+		$M$Sparse_quotes_utils2.c\
 		$M$Sparse_quotes.c\
 		$M$Sparse_redir.c\
 		$M$Sprint.c\
@@ -32,6 +33,7 @@ SRCS =  $M$Sbuiltins.c\
 		$M$Sprocess_input.c\
 		$M$Sprocess_multiple_cmds.c\
 		$M$Sprocess_one_cmd.c\
+		$M$Sprocess_one_cmd2.c\
 		$M$Sprocess_redir_utils.c\
 		$M$Sprocess_redir.c\
 		$M$Ssearch.c\
@@ -61,6 +63,7 @@ OBJS =  $M$Obuiltins.o\
 		$M$Oparse_pipes_utils.o\
 		$M$Oparse_pipes.o\
 		$M$Oparse_quotes_utils.o\
+		$M$Oparse_quotes_utils2.o\
 		$M$Oparse_quotes.o\
 		$M$Oparse_redir.o\
 		$M$Oprint.o\
@@ -72,6 +75,7 @@ OBJS =  $M$Obuiltins.o\
 		$M$Oprocess_input.o\
 		$M$Oprocess_multiple_cmds.o\
 		$M$Oprocess_one_cmd.o\
+		$M$Oprocess_one_cmd2.o\
 		$M$Oprocess_redir_utils.o\
 		$M$Oprocess_redir.o\
 		$M$Osearch.o\

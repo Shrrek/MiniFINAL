@@ -12,21 +12,10 @@
 
 #include "../incs/minishell.h"
 
-static void	ft_process_quote(const char *str, int *i, char quote)
+static	void	ft_process_string_aux(const char *str, int *i, char c)
 {
-	(*i)++;
-	while (str[*i] && str[*i] != quote)
+	while (str[*i] && str[*i] != c && str[*i] != 34 && str[*i] != 39)
 		(*i)++;
-	(*i)++;
-}
-
-static void	ft_process_spaces(const char *str, int *i, int *start, char c)
-{
-	while (str[*i] && str[*i] == c)
-	{
-		(*i)++;
-		*start = *i;
-	}
 }
 
 static char	**ft_process_string(char **dest, const char *str, char c)
@@ -46,10 +35,7 @@ static char	**ft_process_string(char **dest, const char *str, char c)
 		if (str[i] && (str[i] == 34 || str[i] == 39))
 			ft_process_quote(str, &i, str[i]);
 		if (str[i] && str[i] != c)
-		{
-			while (str[i] && str[i] != c && str[i] != 34 && str[i] != 39)
-				i++;
-		}
+			ft_process_string_aux(str, &i, c);
 		if (!str[i] || str[i] == c)
 		{
 			dest[++j] = ft_strndup(&str[start], i - start);
