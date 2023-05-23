@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jperales <jperales@student.42urduli>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/11 11:09:48 by jperales          #+#    #+#             */
-/*   Updated: 2023/05/11 11:09:52 by jperales         ###   ########.fr       */
+/*   Created: 2023/03/11 10:19:48 by jperales          #+#    #+#             */
+/*   Updated: 2023/05/23 19:09:52 by jperales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 # include <sys/wait.h>
 # include <signal.h>
 # include <limits.h>
-// # include <dirent.h>
 
 typedef struct s_mini
 {
