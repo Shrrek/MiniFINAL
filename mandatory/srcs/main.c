@@ -48,7 +48,10 @@ int	main(int argc, char **argv, char **envp)
 		{
 			minishell.input = readline("MiniTabaqueros >$ ");
 			if (!minishell.input)
+			{
+				printf("exit\n");
 				break ;
+			}
 			add_history(minishell.input);
 			exit = ft_process_input(&minishell);
 			if (exit == 1)

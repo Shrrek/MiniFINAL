@@ -10,7 +10,7 @@ void	ft_process_here_doc(t_mini *minishell)
 	pipe(fd);
 	while (1)
 	{
-		line = readline("");
+		line = readline(">");
 		if (ft_strcmp(line, minishell->here_doc))
 			break ;
 		tmp = line;

@@ -43,3 +43,18 @@ void	ft_child_signal_handler(int signal)
 		g_status = 131;
 	}
 }
+
+void	ft_heredoc_signal(int signal)
+{
+	extern int	g_status;
+
+	if (signal == SIGINT)
+	{
+		ft_putstr_fd(0, "\n", 0);
+		g_status = 1;
+	}
+	if (signal == EOF)
+		return ;
+	if (signal == SIGQUIT)
+		return ;	
+}

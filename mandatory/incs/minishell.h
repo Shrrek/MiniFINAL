@@ -165,6 +165,7 @@ bool	ft_isdigit(int c);
 /* SIGNALS FUNCTIONS */
 void	ft_signal_handler(int signal);
 void	ft_child_signal_handler(int signal);
+void	ft_heredoc_signal(int signal);
 
 /* SIZE FUNCTIONS */
 size_t	ft_strlen(char *str);
