@@ -26,7 +26,14 @@ void	ft_exec_one_child(t_mini *minishell, int *fd)
 
 	minishell->or_outfd = dup(STDOUT_FILENO);
 	if (minishell->here_doc)
+	{
+		printf("AQUI\n");
+		signal(SIGINT, ft_heredoc_signal);
+		signal(SIGQUIT, ft_signal_handler);
 		ft_process_here_doc(minishell);
+		//signal(SIGINT, SIG_DFL);
+		//signal(SIGQUIT, SIG_DFL);
+	}
 	if (fd)
 		ft_check_fd(fd[0], STDIN_FILENO);
 	if (fd)

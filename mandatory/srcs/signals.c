@@ -50,11 +50,13 @@ void	ft_heredoc_signal(int signal)
 
 	if (signal == SIGINT)
 	{
-		ft_putstr_fd(0, "\n", 0);
+		//ft_putstr_fd(0, "\n", 0);
 		g_status = 1;
+		exit (0);
 	}
-	if (signal == EOF)
-		return ;
 	if (signal == SIGQUIT)
-		return ;	
+	{
+		printf("Fuera\n");
+		return ;
+	}
 }

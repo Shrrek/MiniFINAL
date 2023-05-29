@@ -23,6 +23,7 @@ void	ft_process_here_doc(t_mini *minishell)
 	close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
+	
 }
 
 char	*ft_get_here_doc(char *str)
